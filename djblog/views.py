@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404 ,render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post
 from django.http import  Http404
 
@@ -7,15 +8,23 @@ from django.http import  Http404
 
 
 def post_list(request): # list all poosts
-    posts = Post.published.all()
+    post_list = Post.published.all()
+    paginator = Paginator(post_list, 3) # paginator with 3 posts per page
+    page_number = request.GET.get('page', 1)
+    try:
+        posts = paginator.page(page_number)
+    except PageNotAnInteger:
+        posts = paginator.page(1) # if page number is out of range return to page 1
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages) # if last page is out of range
     return render(
         request,
-        '/home/sebbie/Desktop/projects/full-blog/djblog/post/list.html',
+        'post/list.html',
         {'posts':posts}
     )
 
 # return a single post
-def post_detail(request, id):
+def post_detail(request, year, month, day, post):
     # try:
     #     post = Post.published.get(id = id)
     # except Post.DoesNotExist:
@@ -23,12 +32,17 @@ def post_detail(request, id):
 
     post = get_object_or_404(
         Post,
-        id = id,
-        status = Post.Status.PUBLISHED
+        # id = id,
+        status = Post.Status.PUBLISHED,
+        slug = post,
+        publish__year = year,
+        publish__month = month,
+        publish__day = day
+
     )
 
     return render(
         request,
-        '/home/sebbie/Desktop/projects/full-blog/djblog/templates/post/detail.html',
+        'post/detail.html',
         {'post':post}
     )
