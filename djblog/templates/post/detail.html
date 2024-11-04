@@ -9,4 +9,9 @@
     Pubished {{ post.publish }} by {{ post.author }}
 </p>
 {{ post.body|linebreaks }}
+<p>
+    <a href="{% url 'djblog:post_share' post.id %}">
+        Share this Post
+    </a>
+    </p>
 {% endblock %}
