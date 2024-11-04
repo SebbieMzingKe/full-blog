@@ -1,0 +1,43 @@
+<h2>Add new comment</h2>
+<form action="{% url 'djblog:post_comment' post.id %}" method="post">
+    
+    <!-- {{ form.as_p }} -->
+
+    <div class="left">
+        <label for="id_name">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="error">{{ form.name.errors }}</div>
+        {% endif %}
+      </div>
+    
+      <!-- Email field -->
+      <div class="left">
+        <label for="id_email">{{ form.email.label }}</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="error">{{ form.email.errors }}</div>
+        {% endif %}
+      </div>
+
+
+      <div>
+        <label for="id_body">{{ form.body.label }}</label>
+        {{ form.body }}
+        {% if form.body.errors %}
+          <div class="error">{{ form.body.errors }}</div>
+        {% endif %}
+      </div>
+
+      
+      <!-- <div class="left">
+        {{ form.name.as_field_group }}
+      </div>
+
+      <div class="left">
+        {{ form.email.as_field_group }}
+      </div>
+      {{ form.body.as_field_group }} -->
+    {% csrf_token %}
+    <p><input type="submit" value="Add Comment"></p>
+</form>
