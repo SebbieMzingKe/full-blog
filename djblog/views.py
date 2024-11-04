@@ -1,58 +1,31 @@
-from django.shortcuts import get_object_or_404 ,render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import get_object_or_404, render
+from django.http import Http404
 from .models import Post
-from django.http import  Http404
-from django.views.generic import ListView
-
 
 # Create your views here.
 
-
-class PostListView(ListView):
-    queryset = Post.published.all()
-    context_object_name = 'posts'
-    paginate_by = 3
-    template_name = 'post/list.html'
-
-
-def post_list(request): # list all poosts
-    post_list = Post.published.all()
-    paginator = Paginator(post_list, 3) # paginator with 3 posts per page
-    page_number = request.GET.get('page', 1)
-    try:
-        posts = paginator.page(page_number)
-    except PageNotAnInteger:
-        posts = paginator.page(1) # if page number is out of range return to page 1
-    except EmptyPage:
-        posts = paginator.page(paginator.num_pages) # if last page is out of range
+def post_list(request): # display all posts
+    posts = Post.published.all()
+    
     return render(
         request,
-        'post/list.html',
+        'djblog/post/list.html',
         {'posts':posts}
     )
 
-
-
-# return a single post
-def post_detail(request, year, month, day, post):
+def post_detail(request, id): # display a single post
     # try:
     #     post = Post.published.get(id = id)
     # except Post.DoesNotExist:
-    #     raise Http404("No Post found")
-
+    #     raise Http404("No post found")
     post = get_object_or_404(
         Post,
-        # id = id,
-        status = Post.Status.PUBLISHED,
-        slug = post,
-        publish__year = year,
-        publish__month = month,
-        publish__day = day
-
+        id = id,
+        status = Post.Status.PUBLISHED
     )
-
     return render(
         request,
-        'post/detail.html',
+        'djblog/post/detail.html',
         {'post':post}
     )
+    
