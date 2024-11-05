@@ -1,4 +1,5 @@
 {% extends "djblog/base.html" %}
+{% load blog_tags %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
@@ -8,7 +9,7 @@
 <p class="date">
     Pubished {{ post.publish }} by {{ post.author }}
 </p>
-{{ post.body|linebreaks }}
+{{ post.body|markdown }}
 <p>
     <a href="{% url 'djblog:post_share' post.id %}">
         Share this Post
